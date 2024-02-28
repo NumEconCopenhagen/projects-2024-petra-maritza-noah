@@ -1,9 +1,9 @@
-# \[Group name\]
+# \[Group 45\]
 
 **Group members:**
-- A
-- B
-- C
+- Maritza Huanchi Gutierrez
+- Noah Indrehus
+- Petra Centis
 
 This repository contains  
 1. Inaugural project. 
