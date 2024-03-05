@@ -40,6 +40,7 @@ class ExchangeEconomyClass:
 
         x1A,x2A = self.demand_A(p1)
         x1B,x2B = self.demand_B(p1)
+        #there is no p2 ?? not sure is correct
 
         eps1 = x1A-par.w1A + x1B-(1-par.w1A)
         eps2 = x2A-par.w2A + x2B-(1-par.w2A)
