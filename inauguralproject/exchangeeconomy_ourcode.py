@@ -53,9 +53,7 @@ class ExchangeEconomyClass:
         eps2 = x2A-par.w2A + x2B-(1-par.w2A)
 
         return eps1,eps2
-    
-#TRYING TO DO SOMETHING:
-    #def check_market_clearing1(self,p1):
+
     def check_market_clearing1(self,p1, p2):
 
         par = self.par
@@ -77,8 +75,6 @@ class ExchangeEconomyClass:
         epss2 = x2A-par.w2A + x2B-(1-par.w2A)
 
         return epss2
-
-  #STILL HAVE TO FIX THIS CODE:
     
     #def find_equilibrium(self,p1_guess,p2):
       
