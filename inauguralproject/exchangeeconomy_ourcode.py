@@ -46,3 +46,75 @@ class ExchangeEconomyClass:
 
         return eps1,eps2
     
+#TRYING TO DO SOMETHING:
+    def check_market_clearing1(self,p1):
+
+        par = self.par
+
+        x1A,x2A = self.demand_A(p1)
+        x1B,x2B = self.demand_B(p1)
+
+        epss1 = x1A-par.w1A + x1B-(1-par.w1A)
+
+        return epss1
+
+  #STILL HAVE TO FIX THIS CODE:
+      
+    def find_equilibrium(self,p1_guess,p2):
+        
+        t = 0
+        p1 = p1_guess
+        
+        # using a while loop as we don't know number of iterations a priori
+        while True:
+
+            # a. step 1: excess demand
+            Z1 = epss1(p1,p2)
+            
+            # b: step 2: stop?
+            if  np.abs(Z1) < eps or t >= maxiter:
+                print(f'{t:3d}: p1 = {p1:12.8f} -> excess demand -> {Z1:14.8f}')
+                break    
+            
+            # c. Print the first 5 and every 25th iteration using the modulus operator 
+            if t < 5 or t%25 == 0:
+                print(f'{t:3d}: p1 = {p1:12.8f} -> excess demand -> {Z1:14.8f}')
+            elif t == 5:
+                print('   ...')
+            
+            # d. step 3: update p1
+            p1 = p1 + self.kappa*Z1/self.N
+            
+            # e. step 4: update counter and return to step 1
+            t += 1    
+
+
+        # Check if solution is found 
+        if np.abs(Z1) < self.eps:
+            # Store equilibrium prices
+            self.p1_star = p1 
+            self.p2_star = p2
+
+            # Store equilibrium excess demand 
+            self.Z1 = Z1
+            self.Z2 = self.excess_demand_good_2_func(self.p1_star, self.p2_star)
+
+            # Make sure that Walras' law is satisfied
+            if not np.abs(self.Z2)<self.eps:
+                print('The market for good 2 was not cleared')
+                print(f'Z2 = {self.Z2}')
+
+        else:
+            print('Solution was not found')
+
+
+    def print_solution(self):
+
+        text = 'Solution to market equilibrium:\n'
+        text += f'p1 = {self.p1_star:5.3f}\np2 = {self.p2_star:5.3f}\n\n'
+
+        text += 'Excess demands are:\n'
+        text += f'Z1 = {self.Z1}\n'
+        text += f'Z2 = {self.Z2}'
+        print(text)
+
