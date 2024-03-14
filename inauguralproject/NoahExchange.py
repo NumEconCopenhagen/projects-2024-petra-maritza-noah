@@ -70,38 +70,43 @@ class ExchangeEconomyClass:
 
         return epss2
       
-    def find_equilibrium(self, p1_guess, eps, kappa, maxiter):
+    def find_equilibrium(self, p1_guess, kappa, eps, maxiter):
         import numpy as np
-        p2 = 1  # p2 is the numeraire and is set to 1
         p1 = p1_guess
         t = 0
-
-        while True:
-            # Calculate excess demands
+        p1_last = p1  # To track the previous iteration's p1 for convergence check
+    
+        for t in range(maxiter):
+            # Calculate excess demands for goods 1 and 2
             eps1 = self.check_market_clearing1(p1)
             eps2 = self.check_market_clearing2(p1)
 
-            # Print progress
-            if t < 5 or t % 25 == 0:
-                print(f'{t:3d}: p1 = {p1:12.8f}, eps1 = {eps1:14.8f}, eps2 = {eps2:14.8f}')
-            elif t == 5:
-                print('   ...')
+            # Print current status to monitor the iteration process
+            print(f'Iteration {t}: p1 = {p1:.8f}, excess demand eps1 = {eps1:.8f}, eps2 = {eps2:.8f}')
 
-            # Check if market is cleared for good 1
-            if np.abs(eps1) < eps:
-                break
+            # Check if market is cleared for both goods, taking the absolute values of excess demands
+            if np.abs(eps1) < eps and np.abs(eps2) < eps:
+                print(f'Equilibrium found at iteration {t}: p1 = {p1:.8f}')
+                self.p1_star = p1
+                return p1  # Return immediately upon finding a solution
 
-            # Update p1 based on excess demand for good 1
-            p1 = p1 - kappa * eps1
+        # Adjust p1 based on the excess demand for good 1
+        # Ensure that p1 does not become negative or zero
+            p1_update = p1 - kappa * eps1
+            if p1_update <= 0:
+                kappa *= 0.5  # Reduce kappa if p1_update is non-positive
+                continue  # Skip the rest of this iteration
 
-            t += 1
-            if t >= maxiter:
-                print('Max iterations reached without finding equilibrium.')
-                break
+            p1 = p1_update  # Update p1 if p1_update is positive
+        
+            # If the change in p1 is very small, we might be close to convergence
+            if np.abs(p1 - p1_last) < eps:
+                print(f'Price convergence reached at iteration {t}: p1 = {p1:.8f}')
+                self.p1_star = p1
+                return p1  # Return if we've nearly converged
 
-        if np.abs(eps1) < eps:
-            self.p1_star = p1
-            self.p2_star = p2  # p2 is always 1
-            print(f'Equilibrium found: p1 = {self.p1_star}, p2 = {self.p2_star}')
-        else:
-            print('Equilibrium not found.')
+            p1_last = p1  # Update p1_last for the next iteration
+
+    # If we exit the loop without returning, no equilibrium was found
+        print('Max iterations reached without finding equilibrium. Consider adjusting your parameters or initial guess.')
+        self.p1_star = None  # Indicate that we did not find a solution
