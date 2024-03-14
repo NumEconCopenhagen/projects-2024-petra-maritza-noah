@@ -60,12 +60,12 @@ class ExchangeEconomyClass:
 
         return epss1
     
-    def check_market_clearing2(self,p1):
+    def check_market_clearing2(self,p1, p2):
 
         par = self.par
 
-        x1A,x2A = self.demand_A(p1)
-        x1B,x2B = self.demand_B(p1)
+        x1A,x2A = self.demand_A(p1, p2)
+        x1B,x2B = self.demand_B(p1, p2)
 
         epss2 = x2A-par.w2A + x2B-(1-par.w2A)
 
@@ -81,7 +81,7 @@ class ExchangeEconomyClass:
         while True:
 
             # a. step 1: excess demand
-            epss1 = self.check_market_clearing1(p1, p2)
+            #epss1 = self.check_market_clearing1(p1, p2)
             Z1 = epss1
 
             # b: step 2: stop?
@@ -110,7 +110,7 @@ class ExchangeEconomyClass:
 
             # Store equilibrium excess demand 
             self.Z1 = Z1
-            self.Z2 = self.check_market_clearing1(self.p1_star, self.p2_star)
+            self.Z2 = self.check_market_clearing2(self.p1_star, self.p2_star)
 
             # Make sure that Walras' law is satisfied
             if not np.abs(self.Z2)< eps:
@@ -121,6 +121,7 @@ class ExchangeEconomyClass:
             print('Solution was not found')
 
 
+    #Display the solution
     def print_solution(self):
 
         text = 'Solution to market equilibrium:\n'
