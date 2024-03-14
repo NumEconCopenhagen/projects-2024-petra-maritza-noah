@@ -15,11 +15,11 @@ class ExchangeEconomyClass:
         par.w2A = 0.3
 
         #ADDING PARAMETERS THAT I AM NOT REALLY SURE:
-        #par.N = N # number of agents
-        par.k = 2 # relative endowment of good 1
-        par.kappa = 0.1 # Adjustment factor for solving
-        par.eps = 1e-8 # Tolerance parameter for solving
-        par.maxiter=500 # Max iterations when solving
+        # par.N = 1000 # number of agents
+        # par.k = 2 # relative endowment of good 1
+        # par.kappa = 0.1 # Adjustment factor for solving
+        # par.eps = 1e-8 # Tolerance parameter for solving
+        # par.maxiter=500 # Max iterations when solving
 
 
     def utility_A(self,x1A,x2A):
@@ -80,6 +80,11 @@ class ExchangeEconomyClass:
       
     def find_equilibrium(self,p1_guess,p2, N, k, eps, kappa, maxiter):
         import numpy as np
+        N = 1000 # number of agents --> Not sure why 1000, I just copied the notebook
+        k = 2 # relative endowment of good 1 --> Also copied the notebook, not sure what to put here
+        kappa = 0.1 # Adjustment factor for solving
+        eps = 1e-8 # Tolerance parameter for solving
+        maxiter=500 # Maximum iterations when solving
         t = 0
         p1 = p1_guess
         epss1 = self.check_market_clearing1(p1, p2)
