@@ -23,16 +23,18 @@ class ExchangeEconomyClass:
         par = self.par
         return x1B**par.beta * x2B**(1 - par.beta)
 
-    def demand_A(self,p1, p2):
-        par = self.par
-        x1A = par.alpha * (p1 * par.w1A + p2 * par.w2A) / p1
-        x2A = (1 - par.alpha) * (p1 * par.w1A + p2 * par.w2A) / p2
+    def demand_A(self,p1):
+        w1A, w2A = self.par.w1A, self.par.w2A
+        alpha = self.par.alpha
+        x1A = alpha * (w1A * p1 + w2A) / p1
+        x2A = (1 - alpha) * (w1A * p1 + w2A)
         return x1A, x2A
 
-    def demand_B(self,p1, p2):
-        par = self.par
-        x1B = par.beta * (p1 * par.w1A + p2 * par.w2A) / p1
-        x2B = (1 - par.beta) * (p1 * par.w1A + p2 * par.w2A) / p2
+    def demand_B(self,p1):
+        w1B, w2B = (1 - self.par.w1A), (1 - self.par.w2A)
+        beta = self.par.beta
+        x1B = beta * (w1B * p1 + w2B) / p1
+        x2B = (1 - beta) * (w1B * p1 + w2B)
         return x1B, x2B
 
     def check_market_clearing(self,p1):
@@ -42,93 +44,64 @@ class ExchangeEconomyClass:
         x1A,x2A = self.demand_A(p1)
         x1B,x2B = self.demand_B(p1)
 
-        eps1 = x1A-par.w1A + x1B-(1-par.w1A)
-        eps2 = x2A-par.w2A + x2B-(1-par.w2A)
+        # Simplified, as we always know total endowment is 1 for each good
+        eps1 = x1A + x1B - 1
+        eps2 = x2A + x2B - 1
 
         return eps1,eps2
     
     #QUESTION 3 CODE:
 
-    def check_market_clearing1(self,p1, p2):
+    def check_market_clearing1(self,p1):
+        x1A, _ = self.demand_A(p1)
+        x1B, _ = self.demand_B(p1)
 
-        par = self.par
-
-        x1A,x2A = self.demand_A(p1, p2)
-        x1B,x2B = self.demand_B(p1, p2)
-
-        epss1 = x1A-par.w1A + x1B-(1-par.w1A)
+        # simplified as total endowment = 1 for each good
+        epss1 = x1A + x1B - 1
 
         return epss1
     
-    def check_market_clearing2(self,p1, p2):
-
-        par = self.par
-
-        x1A,x2A = self.demand_A(p1, p2)
-        x1B,x2B = self.demand_B(p1, p2)
-
-        epss2 = x2A-par.w2A + x2B-(1-par.w2A)
+    def check_market_clearing2(self,p1):
+        _, x2A = self.demand_A(p1)
+        _, x2B = self.demand_B(p1)
+        
+        # simplified as total endowment = 1 for each good
+        epss2 = x2A + x2B - 1
 
         return epss2
       
-    def find_equilibrium(self,p1_guess,p2, N, k, eps, kappa, maxiter):
+    def find_equilibrium(self, p1_guess, eps, kappa, maxiter):
         import numpy as np
-        t = 0
+        p2 = 1  # p2 is the numeraire and is set to 1
         p1 = p1_guess
-        epss1 = self.check_market_clearing1(p1, p2)
-        
-        # using a while loop as we don't know number of iterations a priori
+        t = 0
+
         while True:
+            # Calculate excess demands
+            eps1 = self.check_market_clearing1(p1)
+            eps2 = self.check_market_clearing2(p1)
 
-            # a. step 1: excess demand
-            #epss1 = self.check_market_clearing1(p1, p2)
-            Z1 = epss1
-
-            # b: step 2: stop?
-            if  np.abs(Z1) < eps or t >= maxiter:
-                print(f'{t:3d}: p1 = {p1:12.8f} -> excess demand -> {Z1:14.8f}')
-                break    
-            
-            # c. Print the first 5 and every 25th iteration using the modulus operator 
-            if t < 5 or t%25 == 0:
-                print(f'{t:3d}: p1 = {p1:12.8f} -> excess demand -> {Z1:14.8f}')
+            # Print progress
+            if t < 5 or t % 25 == 0:
+                print(f'{t:3d}: p1 = {p1:12.8f}, eps1 = {eps1:14.8f}, eps2 = {eps2:14.8f}')
             elif t == 5:
                 print('   ...')
-            
-            # d. step 3: update p1
-            p1 = p1 + kappa*Z1/N
-            
-            # e. step 4: update counter and return to step 1
-            t += 1    
 
+            # Check if market is cleared for good 1
+            if np.abs(eps1) < eps:
+                break
 
-        # Check if solution is found 
-        if np.abs(Z1) < eps:
-            # Store equilibrium prices
-            self.p1_star = p1 
-            self.p2_star = p2
+            # Update p1 based on excess demand for good 1
+            p1 = p1 - kappa * eps1
 
-            # Store equilibrium excess demand 
-            self.Z1 = Z1
-            self.Z2 = self.check_market_clearing2(self.p1_star, self.p2_star)
+            t += 1
+            if t >= maxiter:
+                print('Max iterations reached without finding equilibrium.')
+                break
 
-            # Make sure that Walras' law is satisfied
-            if not np.abs(self.Z2)< eps:
-                print('The market for good 2 was not cleared')
-                print(f'Z2 = {self.Z2}')
-
+        if np.abs(eps1) < eps:
+            self.p1_star = p1
+            self.p2_star = p2  # p2 is always 1
+            print(f'Equilibrium found: p1 = {self.p1_star}, p2 = {self.p2_star}')
         else:
-            print('Solution was not found')
-
-
-    #Display the solution
-    def print_solution(self):
-
-        text = 'Solution to market equilibrium:\n'
-        text += f'p1 = {self.p1_star:5.3f}\np2 = {self.p2_star:5.3f}\n\n'
-
-        text += 'Excess demands are:\n'
-        text += f'Z1 = {self.Z1}\n'
-        text += f'Z2 = {self.Z2}'
-        print(text)
-
+            print('Equilibrium not found.')
