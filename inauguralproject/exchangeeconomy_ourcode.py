@@ -14,13 +14,6 @@ class ExchangeEconomyClass:
         par.w1A = 0.8
         par.w2A = 0.3
 
-        #ADDING PARAMETERS THAT I AM NOT REALLY SURE:
-        # par.N = 1000 # number of agents
-        # par.k = 2 # relative endowment of good 1
-        # par.kappa = 0.1 # Adjustment factor for solving
-        # par.eps = 1e-8 # Tolerance parameter for solving
-        # par.maxiter=500 # Max iterations when solving
-
 
     def utility_A(self,x1A,x2A):
         par = self.par
@@ -53,6 +46,8 @@ class ExchangeEconomyClass:
         eps2 = x2A-par.w2A + x2B-(1-par.w2A)
 
         return eps1,eps2
+    
+    #QUESTION 3 CODE:
 
     def check_market_clearing1(self,p1, p2):
 
@@ -75,8 +70,6 @@ class ExchangeEconomyClass:
         epss2 = x2A-par.w2A + x2B-(1-par.w2A)
 
         return epss2
-    
-    #def find_equilibrium(self,p1_guess,p2):
       
     def find_equilibrium(self,p1_guess,p2, N, k, eps, kappa, maxiter):
         import numpy as np
