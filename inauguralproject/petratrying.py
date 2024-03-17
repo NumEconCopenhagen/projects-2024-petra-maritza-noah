@@ -35,15 +35,17 @@ class ExchangeEconomyClass:
         x2B = (1 - par.beta) * (p1 * par.w1A + p2 * par.w2A) / p2
         return x1B, x2B
 
-    def check_market_clearing(self,p1):
+    #Check Walras market equilibrium:
+    
+    def check_market_clearing(self,p1,p2):
 
         par = self.par
 
-        x1A,x2A = self.demand_A(p1)
-        x1B,x2B = self.demand_B(p1)
+        x1A,x2A = self.demand_A(p1, p2)
+        x1B,x2B = self.demand_B(p1, p2)
 
-        eps1 = x1A-par.w1A + x1B-(1-par.w1A)
-        eps2 = x2A-par.w2A + x2B-(1-par.w2A)
+        eps1 = x1A + x1B - 1
+        eps2 = x2A + x2B - 1
 
         return eps1,eps2
     
@@ -51,25 +53,23 @@ class ExchangeEconomyClass:
 
     def check_market_clearing1(self,p1, p2):
 
-        par = self.par
+        x1A, _ = self.demand_A(p1, p2)
+        x1B, _ = self.demand_B(p1, p2)
 
-        x1A,x2A = self.demand_A(p1, p2)
-        x1B,x2B = self.demand_B(p1, p2)
-
-        epss1 = x1A-par.w1A + x1B-(1-par.w1A)
+        epss1 = x1A + x1B - 1
 
         return epss1
+        #epss1 is excess demand for good1
     
     def check_market_clearing2(self,p1, p2):
 
-        par = self.par
+        _,x2A = self.demand_A(p1, p2)
+        _,x2B = self.demand_B(p1, p2)
 
-        x1A,x2A = self.demand_A(p1, p2)
-        x1B,x2B = self.demand_B(p1, p2)
-
-        epss2 = x2A-par.w2A + x2B-(1-par.w2A)
+        epss2 = x2A + x2B - 1
 
         return epss2
+        #epss2 is excess demand for good2
       
     def find_equilibrium(self,p1_guess,p2, N, k, eps, kappa, maxiter):
         import numpy as np
@@ -97,6 +97,9 @@ class ExchangeEconomyClass:
             
             # d. step 3: update p1
             p1 = p1 + kappa*Z1/N
+
+            #recalculate epss1 using the updated p1
+            epss1 = self.check_market_clearing1(p1,p2)
             
             # e. step 4: update counter and return to step 1
             t += 1    
@@ -132,3 +135,5 @@ class ExchangeEconomyClass:
         text += f'Z2 = {self.Z2}'
         print(text)
 
+
+#QUESTION 4A AND 4B:
