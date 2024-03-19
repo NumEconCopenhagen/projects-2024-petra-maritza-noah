@@ -135,3 +135,10 @@ class ExchangeEconomyClass:
             text += 'Excess demands not calculated.\n'
 
         print(text)
+
+
+    #QUESTION 6A:
+    
+    def utility_aggregate(self,x1A,x2A):
+        par = self.par
+        return x1A**par.alpha * x2A**(1 - par.alpha) + (1-x1A)**par.beta * (1-x2A)**(1 - par.beta)
