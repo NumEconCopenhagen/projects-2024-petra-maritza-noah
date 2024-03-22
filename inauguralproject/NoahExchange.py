@@ -142,3 +142,16 @@ class ExchangeEconomyClass:
     def utility_aggregate(self,x1A,x2A):
         par = self.par
         return x1A**par.alpha * x2A**(1 - par.alpha) + (1-x1A)**par.beta * (1-x2A)**(1 - par.beta)
+
+    #QUESTION 8:
+    
+    def utility_aggregate_equilibrium(self,x):
+        x1A = x[0]
+        x2A = x[1]
+        return -(self.utility_A(x1A, x2A) + self.utility_B(1 - x1A, 1 - x2A))
+
+    def utility_A_mark(self,x1A,x2A):
+        return x1A**(self.par.alpha) * x2A**(1 - self.par.alpha)
+
+    def utility_B_mark(self,x1B,x2B):
+        return x1B**(self.par.beta) * x2B**(1 - self.par.beta)
