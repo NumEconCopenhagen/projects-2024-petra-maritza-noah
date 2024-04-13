@@ -1,15 +1,15 @@
 location,year,net_wealth,age_group
-All Denmark,2019,611289,nw_18
-Capital municipalities,2019,614787,nw_18
-Metropolitan municipalities,2019,357030,nw_18
-Provincial municipalities,2019,637419,nw_18
-Commuter municipalities,2019,752423,nw_18
-Rural municipalities,2019,619998,nw_18
-Copenhagen,2019,364425,nw_18
-All Denmark,2022,701429,nw_18
-Capital municipalities,2022,674498,nw_18
-Metropolitan municipalities,2022,409333,nw_18
-Provincial municipalities,2022,738875,nw_18
-Commuter municipalities,2022,880420,nw_18
-Rural municipalities,2022,724881,nw_18
-Copenhagen,2022,400015,nw_18
+All Denmark,2019,611289,All age groups
+Capital municipalities,2019,614787,All age groups
+Metropolitan municipalities,2019,357030,All age groups
+Provincial municipalities,2019,637419,All age groups
+Commuter municipalities,2019,752423,All age groups
+Rural municipalities,2019,619998,All age groups
+Copenhagen,2019,364425,All age groups
+All Denmark,2022,701429,All age groups
+Capital municipalities,2022,674498,All age groups
+Metropolitan municipalities,2022,409333,All age groups
+Provincial municipalities,2022,738875,All age groups
+Commuter municipalities,2022,880420,All age groups
+Rural municipalities,2022,724881,All age groups
+Copenhagen,2022,400015,All age groups

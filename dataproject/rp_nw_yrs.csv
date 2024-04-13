@@ -1,15 +1,15 @@
 location,year,relative_poverty,net_wealth,age_group
-All Denmark,2019,4.4,611289,nw_18
-Capital municipalities,2019,4.7,614787,nw_18
-Metropolitan municipalities,2019,5.2,357030,nw_18
-Provincial municipalities,2019,4.1,637419,nw_18
-Commuter municipalities,2019,3.5,752423,nw_18
-Rural municipalities,2019,4.3,619998,nw_18
-Copenhagen,2019,5.9,364425,nw_18
-All Denmark,2022,3.7,701429,nw_18
-Capital municipalities,2022,4.0,674498,nw_18
-Metropolitan municipalities,2022,4.6,409333,nw_18
-Provincial municipalities,2022,3.5,738875,nw_18
-Commuter municipalities,2022,2.9,880420,nw_18
-Rural municipalities,2022,3.5,724881,nw_18
-Copenhagen,2022,4.8,400015,nw_18
+All Denmark,2019,4.4,611289,All age groups
+Capital municipalities,2019,4.7,614787,All age groups
+Metropolitan municipalities,2019,5.2,357030,All age groups
+Provincial municipalities,2019,4.1,637419,All age groups
+Commuter municipalities,2019,3.5,752423,All age groups
+Rural municipalities,2019,4.3,619998,All age groups
+Copenhagen,2019,5.9,364425,All age groups
+All Denmark,2022,3.7,701429,All age groups
+Capital municipalities,2022,4.0,674498,All age groups
+Metropolitan municipalities,2022,4.6,409333,All age groups
+Provincial municipalities,2022,3.5,738875,All age groups
+Commuter municipalities,2022,2.9,880420,All age groups
+Rural municipalities,2022,3.5,724881,All age groups
+Copenhagen,2022,4.8,400015,All age groups
