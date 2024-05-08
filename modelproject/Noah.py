@@ -63,7 +63,7 @@ class BeckerTomesModelDebugged:
         """ Continuous optimization """
         result = minimize(self.objective_function, self.par.X0, method='SLSQP')
         self.sol.optimal_X = result.x[0]
-        print(f"Continuous Solution: Optimal X0={self.sol.optimal_X}")
+        # print(f"Continuous Solution: Optimal X0={self.sol.optimal_X}")
 
     def solve_discrete(self):
         """ Discrete optimization """
@@ -79,7 +79,7 @@ class BeckerTomesModelDebugged:
                 #print(f"New Optimal Found: X0={X0}, Utility={utility}")
 
         self.sol.optimal_X0 = optimal_X0
-        print(f"Discrete Solution: Optimal X0={self.sol.optimal_X0}")
+        # print(f"Discrete Solution: Optimal X0={self.sol.optimal_X0}")
 
 # Create an instance of the model and solve it
 model = BeckerTomesModelDebugged()
