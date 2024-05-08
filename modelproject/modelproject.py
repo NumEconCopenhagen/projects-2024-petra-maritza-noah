@@ -8,8 +8,7 @@ import math
 class BeckerTomesModelDebugged:
 
     def __init__(self):
-        """ Setup model of parents' private investment in education,
-             with the aim of maximizing the income of children."""
+        """ Setup model of parents' private investment in education, with the aim of maximizing the income of children."""
         # Parameters
         self.par = SimpleNamespace(
             I1=0.5,           # Luckiness, set to somewhat of an important factor given the value
@@ -25,8 +24,6 @@ class BeckerTomesModelDebugged:
             C0=5              # Parents' consumption in the first period
         )
         self.sol = SimpleNamespace()
-
-    #Next we define the constraints in our model:
 
     def human_capital_production(self, X0, S0, E1):
         """ Human capital production function """
@@ -52,9 +49,6 @@ class BeckerTomesModelDebugged:
         #print(f"Calculating Debt: D1={D1} for X0={X0}, Y0={Y0}")
         return D1
 
-    #This is the function that we aim to maximize: 
-    #It is the future income of the child minus the adjusted debt that they have to repay in the future
-
     def objective_function(self, X0):
         """ Objective function to maximize (negative for minimization) """
         E1 = self.endowment_production(self.par.E0)
@@ -64,14 +58,12 @@ class BeckerTomesModelDebugged:
         obj_val = -(Y1 - (1 + self.par.rt) * D1)
         #print(f"Objective Function: Value={obj_val} for X0={X0}")
         return obj_val
-    
-    #Next we describe two ways of maximizing the objective_function: a continuous way and a discrete one
 
     def solve_continuous(self):
         """ Continuous optimization """
         result = minimize(self.objective_function, self.par.X0, method='SLSQP')
         self.sol.optimal_X = result.x[0]
-        #print(f"Continuous Solution: Optimal X0={self.sol.optimal_X}")
+        # print(f"Continuous Solution: Optimal X0={self.sol.optimal_X}")
 
     def solve_discrete(self):
         """ Discrete optimization """
@@ -87,4 +79,9 @@ class BeckerTomesModelDebugged:
                 #print(f"New Optimal Found: X0={X0}, Utility={utility}")
 
         self.sol.optimal_X0 = optimal_X0
-        print(f"Discrete Solution: Optimal X0={self.sol.optimal_X0}")
+        # print(f"Discrete Solution: Optimal X0={self.sol.optimal_X0}")
+
+# Create an instance of the model and solve it
+model = BeckerTomesModelDebugged()
+model.solve_continuous()
+model.solve_discrete()
