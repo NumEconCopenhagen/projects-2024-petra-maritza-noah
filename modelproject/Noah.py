@@ -28,25 +28,25 @@ class BeckerTomesModelDebugged:
     def human_capital_production(self, X0, S0, E1):
         """ Human capital production function """
         H1 = X0**0.4 + S0**0.5 + 0.3*E1
-        print(f"Calculating Human Capital: H1={H1} for X0={X0}, S0={S0}, E1={E1}")
+        #print(f"Calculating Human Capital: H1={H1} for X0={X0}, S0={S0}, E1={E1}")
         return H1
 
     def endowment_production(self, E0):
         """ Endowment production function """
         E1 = self.par.alpha + self.par.h * E0 + self.par.vt
-        print(f"Calculating Endowment: E1={E1} for E0={E0}")
+        #print(f"Calculating Endowment: E1={E1} for E0={E0}")
         return E1
 
     def calc_income(self, H1, I1):
         """ Calculate total income """
         Y1 = H1 + I1
-        print(f"Calculating Income: Y1={Y1} for H1={H1}, I1={I1}")
+        #print(f"Calculating Income: Y1={Y1} for H1={H1}, I1={I1}")
         return Y1
 
     def calc_debt(self, X0, Y0):
         """ Calculate debt """
         D1 = self.par.C0 + X0 - Y0
-        print(f"Calculating Debt: D1={D1} for X0={X0}, Y0={Y0}")
+        #print(f"Calculating Debt: D1={D1} for X0={X0}, Y0={Y0}")
         return D1
 
     def objective_function(self, X0):
@@ -56,7 +56,7 @@ class BeckerTomesModelDebugged:
         Y1 = self.calc_income(H1, self.par.I1)
         D1 = self.calc_debt(X0, self.par.Y0)
         obj_val = -(Y1 - (1 + self.par.rt) * D1)
-        print(f"Objective Function: Value={obj_val} for X0={X0}")
+        #print(f"Objective Function: Value={obj_val} for X0={X0}")
         return obj_val
 
     def solve_continuous(self):
@@ -76,7 +76,7 @@ class BeckerTomesModelDebugged:
             if utility > max_utility:
                 max_utility = utility
                 optimal_X0 = X0
-                print(f"New Optimal Found: X0={X0}, Utility={utility}")
+                #print(f"New Optimal Found: X0={X0}, Utility={utility}")
 
         self.sol.optimal_X0 = optimal_X0
         print(f"Discrete Solution: Optimal X0={self.sol.optimal_X0}")
