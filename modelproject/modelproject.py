@@ -15,7 +15,7 @@ class BeckerTomesModelDebugged:
             H1=0,             # Placeholder for human capital
             alpha=0.5,        # Social endowment
             vt=0.6,           # Luck, unsystematic component
-            h=0.8,            # Degree of inheritability of endowments
+            h=0.8,            # Degree of inheritability of endowments (0<h<1)
             X0=0.5,           # Initial guess for parental investment
             S0=1.0,           # Government investment in education
             E0=0.4,             # Initial endowment
