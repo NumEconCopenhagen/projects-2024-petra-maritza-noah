@@ -18,7 +18,7 @@ class BeckerTomesModelDebugged:
             h=0.8,            # Degree of inheritability of endowments
             X0=0.5,           # Initial guess for parental investment
             S0=1.0,           # Government investment in education
-            E0=2,             # Initial endowment
+            E0=0.4,             # Initial endowment
             rt=0.05,          # Financial market rate (borrowing rate)
             Y0=5,             # Parents' income in the first period. Our model is not taking in account credit constraints, hence income and consumption are set equal.
             C0=5              # Parents' consumption in the first period
