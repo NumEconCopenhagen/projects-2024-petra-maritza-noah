@@ -1,94 +1,87 @@
-# def solve_continuous(self, do_print=False):
-    #     """Solve model continuously"""
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from types import SimpleNamespace
+from scipy.optimize import minimize
+import math
 
-    #     par = self.par
-    #     sol = self.sol
-    #     opt = SimpleNamespace()
+class BeckerTomesModelDebugged:
 
-    #     #a. calculate income with negative since we will use minimize()
-    #     def objective(x):
-    #         return self.objective_function(x[0])
-        
-    #     #b. constraints and bounds
-    #     bounds = [(0, None)]
+    def __init__(self):
+        """ Setup model of parents' private investment in education, with the aim of maximizing the income of children."""
+        # Parameters
+        self.par = SimpleNamespace(
+            I1=0.5,           # Luckiness, set to somewhat of an important factor given the value
+            H1=0,             # Placeholder for human capital
+            alpha=0.5,        # Social endowment
+            vt=0.6,           # Luck, unsystematic component
+            h=0.8,            # Degree of inheritability of endowments
+            X0=0.5,           # Initial guess for parental investment
+            S0=1.0,           # Government investment in education
+            E0=2,             # Initial endowment
+            rt=0.05,          # Financial market rate (borrowing rate)
+            Y0=5,             # Parents' income in the first period. Our model is not taking in account credit constraints, hence income and consumption are set equal.
+            C0=5              # Parents' consumption in the first period
+        )
+        self.sol = SimpleNamespace()
 
-    #     #c. initial guess
-    #     x_guess = np.array([0.5])
+    def human_capital_production(self, X0, S0, E1):
+        """ Human capital production function """
+        H1 = X0**0.4 + S0**0.5 + 0.3*E1
+        print(f"Calculating Human Capital: H1={H1} for X0={X0}, S0={S0}, E1={E1}")
+        return H1
 
-    #     #d. find maximization
-    #     result = minimize(objective, x_guess, method="SLSQP", bounds=bounds)
+    def endowment_production(self, E0):
+        """ Endowment production function """
+        E1 = self.par.alpha + self.par.h * E0 + self.par.vt
+        print(f"Calculating Endowment: E1={E1} for E0={E0}")
+        return E1
 
-    # # Store optimal solution
-    #     opt.X0_optimal = result.x[0]
-    #     opt.E1 = self.endowment_production(par.E0)
-    #     opt.H1_optimal = self.human_capital_production(opt.X0_optimal, par.S0, opt.E1)
-    #     opt.Y1_optimal = self.calc_income(opt.H1_optimal, par.I1)
+    def calc_income(self, H1, I1):
+        """ Calculate total income """
+        Y1 = H1 + I1
+        print(f"Calculating Income: Y1={Y1} for H1={H1}, I1={I1}")
+        return Y1
 
-    # # Print answer if required
-    #     if do_print:
-    #         print(f'Optimal parental investment: {opt.X0_optimal:6.4f}')
-    #         print(f'Human capital level: {opt.H1_optimal:6.4f}')
-    #         print(f'Optimal income: {opt.Y1_optimal:6.4f}')
+    def calc_debt(self, X0, Y0):
+        """ Calculate debt """
+        D1 = self.par.C0 + X0 - Y0
+        print(f"Calculating Debt: D1={D1} for X0={X0}, Y0={Y0}")
+        return D1
 
-    #     return opt
+    def objective_function(self, X0):
+        """ Objective function to maximize (negative for minimization) """
+        E1 = self.endowment_production(self.par.E0)
+        H1 = self.human_capital_production(X0, self.par.S0, E1)
+        Y1 = self.calc_income(H1, self.par.I1)
+        D1 = self.calc_debt(X0, self.par.Y0)
+        obj_val = -(Y1 - (1 + self.par.rt) * D1)
+        print(f"Objective Function: Value={obj_val} for X0={X0}")
+        return obj_val
 
+    def solve_continuous(self):
+        """ Continuous optimization """
+        result = minimize(self.objective_function, self.par.X0, method='SLSQP')
+        self.sol.optimal_X = result.x[0]
+        print(f"Continuous Solution: Optimal X0={self.sol.optimal_X}")
 
+    def solve_discrete(self):
+        """ Discrete optimization """
+        X0_values = np.linspace(0, 10, 100)  # Expanded search range for comparison
+        max_utility = -np.inf
+        optimal_X0 = None
 
-#from here solving the model continuously and discretely:
-    # def solve_continuous(self):
-    #     """ Solve the model continuously using scipy's optimization routines """
-    #     result = minimize(self.objective_function, self.par.X0, bounds=[(0, None)])
-    #     self.sol.X0_optimal = result.x[0]
-    #     self.sol.E1 = self.endowment_production(self.par.E0)
-    #     self.sol.H1_optimal = self.human_capital_production(self.sol.X0_optimal, self.par.S0, self.sol.E1)
-    #     self.sol.Y1_optimal = self.calc_income(self.sol.H1_optimal, self.par.I1)
-    #     return self.sol
-    
+        for X0 in X0_values:
+            utility = -self.objective_function(X0)  # Negate to maximize
+            if utility > max_utility:
+                max_utility = utility
+                optimal_X0 = X0
+                print(f"New Optimal Found: X0={X0}, Utility={utility}")
 
-    # def solve_continuous(self):
-    #     """ Solve the model continuously using scipy's optimization routines """
-    #     # Provide a better initial guess
-    #     initial_guess = 0.1  # Adjust as needed
-        
-    #     # Tighter bounds based on the feasible range of X0
-    #     lower_bound = 0.0
-    #     upper_bound = 1.0
-        
-    #     # Adjust optimization algorithm and increase max iterations
-    #     result = minimize(self.objective_function, initial_guess, 
-    #                       bounds=[(lower_bound, upper_bound)],
-    #                       method='L-BFGS-B',  # Another optimization method to try
-    #                       options={'maxiter': 1000})  # Increase max iterations
-        
-    #     self.sol.X0_optimal = result.x[0]
-    #     self.sol.E1 = self.endowment_production(self.par.E0)
-    #     self.sol.H1_optimal = self.human_capital_production(self.sol.X0_optimal, self.par.S0, self.sol.E1)
-    #     self.sol.Y1_optimal = self.calc_income(self.sol.H1_optimal, self.par.I1)
-    #     return self.sol
-    
+        self.sol.optimal_X0 = optimal_X0
+        print(f"Discrete Solution: Optimal X0={self.sol.optimal_X0}")
 
-
-    # def solve_discrete(self):
-    #     """ Solve the model discretely """
-    #     # Generate all possible choices for X0
-    #     X0_values = np.linspace(0, 1, num=100)
-    #     max_income = -np.inf
-    #     optimal_X0 = None
-
-    #     # Iterate through all possible X0 values
-    #     for X0 in X0_values:
-    #         E1 = self.endowment_production(self.par.E0)
-    #         H1 = self.human_capital_production(X0, self.par.S0, E1)
-    #         Y1 = self.calc_income(H1, self.par.I1)
-
-    #         # Update optimal solution if income is higher
-    #         if Y1 > max_income:
-    #             max_income = Y1
-    #             optimal_X0 = X0
-
-    #     # Calculate optimal values for other variables based on the optimal X0
-    #     self.sol.X0_optimal = optimal_X0
-    #     self.sol.E1 = self.endowment_production(self.par.E0)
-    #     self.sol.H1_optimal = self.human_capital_production(optimal_X0, self.par.S0, self.sol.E1)
-    #     self.sol.Y1_optimal = max_income
-    #     return self.sol
+# Create an instance of the model and solve it
+model = BeckerTomesModelDebugged()
+model.solve_continuous()
+model.solve_discrete()
