@@ -85,13 +85,13 @@ class BeckerTomesModelDebugged:
 
     def human_capital_production1(self, X0, S0, E1):
         """ Human capital production function """
-        H1 = X0**0.3 + S0**0.6 + 0.3*E1
+        H1 = X0**0.1 + S0**0.6 + 0.3*E1
         #print(f"Calculating Human Capital: H1={H1} for X0={X0}, S0={S0}, E1={E1}")
         return H1
     
     def human_capital_production2(self, X0, S0, E1):
         """ Human capital production function """
-        H1 = X0**0.6 + S0**0.3 + 0.3*E1
+        H1 = X0**0.6 + S0**0.1 + 0.3*E1
         #print(f"Calculating Human Capital: H1={H1} for X0={X0}, S0={S0}, E1={E1}")
         return H1
 
