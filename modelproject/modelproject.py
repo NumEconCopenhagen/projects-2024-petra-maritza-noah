@@ -81,6 +81,53 @@ class BeckerTomesModelDebugged:
         self.sol.optimal_X0 = optimal_X0
         # print(f"Discrete Solution: Optimal X0={self.sol.optimal_X0}")
 
+    #FURTHER ANALYSIS:
+
+    def human_capital_production1(self, X0, S0, E1):
+        """ Human capital production function """
+        H1 = X0**0.3 + S0**0.6 + 0.3*E1
+        #print(f"Calculating Human Capital: H1={H1} for X0={X0}, S0={S0}, E1={E1}")
+        return H1
+    
+    def human_capital_production2(self, X0, S0, E1):
+        """ Human capital production function """
+        H1 = X0**0.6 + S0**0.3 + 0.3*E1
+        #print(f"Calculating Human Capital: H1={H1} for X0={X0}, S0={S0}, E1={E1}")
+        return H1
+
+    def objective_function1(self, X0):
+        """ Objective function to maximize (negative for minimization) """
+        E1 = self.endowment_production(self.par.E0)
+        H1 = self.human_capital_production1(X0, self.par.S0, E1)
+        Y1 = self.calc_income(H1, self.par.I1)
+        D1 = self.calc_debt(X0, self.par.Y0)
+        obj_val = -(Y1 - (1 + self.par.rt) * D1)
+        #print(f"Objective Function: Value={obj_val} for X0={X0}")
+        return obj_val
+
+    def objective_function2(self, X0):
+        """ Objective function to maximize (negative for minimization) """
+        E1 = self.endowment_production(self.par.E0)
+        H1 = self.human_capital_production2(X0, self.par.S0, E1)
+        Y1 = self.calc_income(H1, self.par.I1)
+        D1 = self.calc_debt(X0, self.par.Y0)
+        obj_val = -(Y1 - (1 + self.par.rt) * D1)
+        #print(f"Objective Function: Value={obj_val} for X0={X0}")
+        return obj_val
+    
+    def solve_continuous1(self):
+        """ Continuous optimization """
+        result = minimize(self.objective_function1, self.par.X0, method='SLSQP')
+        self.sol.optimal_X = result.x[0]
+        # print(f"Continuous Solution: Optimal X0={self.sol.optimal_X}")
+
+    def solve_continuous2(self):
+        """ Continuous optimization """
+        result = minimize(self.objective_function2, self.par.X0, method='SLSQP')
+        self.sol.optimal_X = result.x[0]
+        # print(f"Continuous Solution: Optimal X0={self.sol.optimal_X}")
+
+
 # Create an instance of the model and solve it
 model = BeckerTomesModelDebugged()
 model.solve_continuous()
