@@ -156,3 +156,59 @@ class MarketClearing:
         good2_market_clears = np.isclose(c2_star, y2_star, atol=atol)
 
         return labor_market_clears, good1_market_clears, good2_market_clears
+
+
+# Question 3:
+
+import numpy as np
+from scipy.spatial.distance import cdist
+
+class PointInterpolator:
+    def __init__(self, X):
+        self.X = X
+
+    def find_nearest_points(self, y):
+        # Calculate distances from y to all points in X
+        distances = cdist(np.array([y]), self.X)
+        indices = np.argsort(distances)[0]  # Sort indices by distance
+        sorted_X = self.X[indices]  # Sorted points in X by distance to y
+        return sorted_X[:4]  # Return the 4 closest points
+
+    def compute_barycentric_coordinates(self, y, A, B, C):
+        # Compute barycentric coordinates for triangle ABC
+        denom = (B[1] - C[1]) * (A[0] - C[0]) + (C[0] - B[0]) * (A[1] - C[1])
+        r1 = ((B[1] - C[1]) * (y[0] - C[0]) + (C[0] - B[0]) * (y[1] - C[1])) / denom
+        r2 = ((C[1] - A[1]) * (y[0] - C[0]) + (A[0] - C[0]) * (y[1] - C[1])) / denom
+        r3 = 1.0 - r1 - r2
+        return r1, r2, r3
+
+    def interpolate_value(self, y):
+        # Find nearest points A, B, C, D
+        try:
+            A, B, C, D = self.find_nearest_points(y)
+        except IndexError:
+            print("Not enough points in X to form quadrilateral ABCD.")
+            return None
+
+        # Compute barycentric coordinates for triangles ABC and CDA
+        if A is not None and B is not None and C is not None:
+            r1_ABC, r2_ABC, r3_ABC = self.compute_barycentric_coordinates(y, A, B, C)
+            r1_CDA, r2_CDA, r3_CDA = self.compute_barycentric_coordinates(y, C, D, A)
+
+            # Define your function here, for example:
+            def f(x1, x2):
+                return np.sin(2*np.pi*x1) * np.cos(2*np.pi*x2)
+
+            # Interpolation
+            if 0 <= r1_ABC <= 1 and 0 <= r2_ABC <= 1 and 0 <= r3_ABC <= 1:
+                interpolated_value_ABC = r1_ABC * f(A[0], A[1]) + r2_ABC * f(B[0], B[1]) + r3_ABC * f(C[0], C[1])
+                return interpolated_value_ABC, A, B, C
+            elif 0 <= r1_CDA <= 1 and 0 <= r2_CDA <= 1 and 0 <= r3_CDA <= 1:
+                interpolated_value_CDA = r1_CDA * f(C[0], C[1]) + r2_CDA * f(D[0], D[1]) + r3_CDA * f(A[0], A[1])
+                return interpolated_value_CDA, C, D, A
+            else:
+                print("Point y is not inside triangles ABC or CDA.")
+                return None
+        else:
+            print("Error finding nearest points A, B, C, D.")
+            return None
