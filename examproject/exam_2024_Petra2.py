@@ -135,19 +135,63 @@ class InterpolationSolver:
         print(f"D = {self.D}")
 
     
+    # def solve_question2(self):
+    #     """
+    #     Solve Question 2: Compute barycentric coordinates and determine triangle.
+    #     """
+    #     #Find A, B, C, D
+    #     self.A = self.find_nearest_point(1)
+    #     self.B = self.find_nearest_point(2)
+    #     self.C = self.find_nearest_point(3)
+    #     self.D = self.find_nearest_point(4)
+        
+    #     if self.A is None or self.B is None or self.C is None or self.D is None:
+    #         print("Cannot form the required quadrilateral. Return NaN.")
+    #         return
+        
+    #     # Compute barycentric coordinates for triangles ABC and CDA
+    #     self.r_ABC = self.compute_barycentric_coordinates(self.A, self.B, self.C)
+    #     self.r_CDA = self.compute_barycentric_coordinates(self.C, self.D, self.A)
+        
+    #     # Determine which triangle y is located inside
+    #     if all(0 <= r <= 1 for r in self.r_ABC):
+    #         self.triangle_name = 'ABC'
+    #     elif all(0 <= r <= 1 for r in self.r_CDA):
+    #         self.triangle_name = 'CDA'
+    #     else:
+    #         self.triangle_name = 'None'
+        
+    #     # Print values of A, B, C, D
+    #     # print(f"A = {self.A}")
+    #     # print(f"B = {self.B}")
+    #     # print(f"C = {self.C}")
+    #     # print(f"D = {self.D}")
+        
+    #     # Print barycentric coordinates and triangle location
+    #     print(f"Barycentric coordinates for y: ABC{self.r_ABC}, CDA{self.r_CDA}")
+    #     print(f"Point y is located inside triangle {self.triangle_name}.")
+        
+    #     # Interpolate f(y)
+    #     interpolated_value = self.interpolate_value()
+    #     print(f"The interpolated value of f(y) at y = {self.y} is: {interpolated_value}")
+        
+    #     # Plot points X and y, and triangles ABC, CDA
+    #     #self.plot()
+
     def solve_question2(self):
         """
         Solve Question 2: Compute barycentric coordinates and determine triangle.
         """
-        #Find A, B, C, D
+        # Find A, B, C, D
         self.A = self.find_nearest_point(1)
         self.B = self.find_nearest_point(2)
         self.C = self.find_nearest_point(3)
         self.D = self.find_nearest_point(4)
         
+        # Check if any point is None
         if self.A is None or self.B is None or self.C is None or self.D is None:
             print("Cannot form the required quadrilateral. Return NaN.")
-            return
+            return None
         
         # Compute barycentric coordinates for triangles ABC and CDA
         self.r_ABC = self.compute_barycentric_coordinates(self.A, self.B, self.C)
@@ -161,24 +205,17 @@ class InterpolationSolver:
         else:
             self.triangle_name = 'None'
         
-        # Print values of A, B, C, D
-        # print(f"A = {self.A}")
-        # print(f"B = {self.B}")
-        # print(f"C = {self.C}")
-        # print(f"D = {self.D}")
-        
-        # Print barycentric coordinates and triangle location
-        print(f"Barycentric coordinates for y: ABC{self.r_ABC}, CDA{self.r_CDA}")
-        print(f"Point y is located inside triangle {self.triangle_name}.")
+        # Prepare statements to print
+        statements = []
+        statements.append(f"Barycentric coordinates for y: ABC{self.r_ABC}, CDA{self.r_CDA}")
+        statements.append(f"Point y is located inside triangle {self.triangle_name}.")
         
         # Interpolate f(y)
         interpolated_value = self.interpolate_value()
-        print(f"The interpolated value of f(y) at y = {self.y} is: {interpolated_value}")
+        statements.append(f"The interpolated value of f(y) at y = {self.y} is: {interpolated_value}")
         
-        # Plot points X and y, and triangles ABC, CDA
-        #self.plot()
-
-
+        return statements
+    
     def solve_question3(self):
         """
         Solve Question 3: Compute the approximation of f(y) and compare with the true value.
@@ -203,7 +240,7 @@ class InterpolationSolver:
 
             # Comparison
             print(f"Absolute error: {np.abs(interpolated_value - true_value)}")
-
+                
 
     def f1(x1, x2):
         return x1 * x2
