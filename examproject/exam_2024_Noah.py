@@ -127,37 +127,5 @@ class MarketClearing:
             'good1_clearing': good1_clearing,
             'good2_clearing': good2_clearing
         }
-    
-    def firm_behavior(self, w, p):
-        l_star = (p * self.A * self.gamma / w) ** (1 / (1 - self.gamma))
-        y_star = self.A * l_star ** self.gamma
-        pi_star = p * y_star - w * l_star
-        return l_star, y_star, pi_star
-
-    def consumer_behavior(self, w, p1, p2, tau, T, pi1, pi2):
-        wL = w + T + pi1 + pi2
-        c1 = self.alpha * wL / p1
-        c2 = (1 - self.alpha) * wL / (p2 + tau)
-        L = (wL / self.nu) ** (1 / (1 + self.epsilon))
-        return c1, c2, L
-
-    def social_welfare(self, w, p1, p2, tau, T):
-        l1, y1, pi1 = self.firm_behavior(w, p1)
-        l2, y2, pi2 = self.firm_behavior(w, p2 + tau)
-        c1, c2, L = self.consumer_behavior(w, p1, p2, tau, T, pi1, pi2)
-        U = np.log(c1 ** self.alpha * c2 ** (1 - self.alpha)) - self.nu * L ** (1 + self.epsilon) / (1 + self.epsilon)
-        SWF = U - self.kappa * y2
-        return SWF
-
-    def optimize_swf(self, w, p1, p2):
-        def obj(x):
-            tau, T = x
-            return -self.social_welfare(w, p1, p2, tau, T)
-        
-        x0 = np.array([0.0, 0.0])
-        result = minimize(obj, x0, bounds=[(0, None), (0, None)])
-        return result.x
-
-
 
 
