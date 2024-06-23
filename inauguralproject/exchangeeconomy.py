@@ -70,16 +70,8 @@ class ExchangeEconomyClass:
         
         # simplified as total endowment = 1 for each good
         epss2 = x2A + x2B - 1
-
         return epss2
-      
-    def market_clearing_error(p1):
-        xA1, xA2 = model.demand_A(p1)
-            xB1, xB2 = model.demand_B(p1)
-        epsilon1 = xA1 + xB1 - 1.0
-        epsilon2 = xA2 + xB2 - 1.0
-        return np.array([epsilon1, epsilon2])
-
+ 
     def find_equilibrium(self, p1_guess, kappa, eps, maxiter):
         import numpy as np
         p1 = p1_guess
