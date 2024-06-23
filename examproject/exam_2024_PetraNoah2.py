@@ -94,7 +94,7 @@ class InterpolationSolver:
     
     def solve_question1(self):
         """
-        Solve Question 1: Find A, B, C, D and print values.
+        Solve Question 1: Find A, B, C, D.
         """
         # Find A, B, C, D
         self.A = self.find_nearest_point(1)
@@ -126,15 +126,6 @@ class InterpolationSolver:
             self.triangle_name = 'CDA'
         else:
             self.triangle_name = 'None'
-        
-        # Print barycentric coordinates and triangle location
-        # print(f"Barycentric coordinates for y: ABC {self.r_ABC}, CDA {self.r_CDA}")
-        # print(f"Point y is located inside triangle {self.triangle_name}.")
-        
-        # Interpolate f(y)
-        interpolated_value = self.interpolate_value()
-        # print(f"The interpolated value of f(y) at y = {self.y} is: {interpolated_value}")
-
 
     def f(self, point):
         """
