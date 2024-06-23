@@ -368,23 +368,23 @@ class InterpolationSolver:
 
     
             
-#     def plot(self):
-#         plt.figure(figsize=(8, 6))
-#         plt.scatter(self.X[:, 0], self.X[:, 1], label='X points')
-#         plt.scatter(self.y[0], self.y[1], color='red', label='y')
+    def plot(self):
+        plt.figure(figsize=(8, 6))
+        plt.scatter(self.X[:, 0], self.X[:, 1], label='X points')
+        plt.scatter(self.y[0], self.y[1], color='red', label='y')
 
-#         # Plot triangles ABC and CDA
-#         if self.A is not None and self.B is not None and self.C is not None:
-#             plt.plot([self.A[0], self.B[0], self.C[0], self.A[0]], [self.A[1], self.B[1], self.C[1], self.A[1]], 'b-', label='ABC')
-#             if self.D is not None:
-#                 plt.plot([self.C[0], self.D[0], self.A[0], self.C[0]], [self.C[1], self.D[1], self.A[1], self.C[1]], 'g-', label='CDA')
+        # Plot triangles ABC and CDA
+        if self.A is not None and self.B is not None and self.C is not None:
+            plt.plot([self.A[0], self.B[0], self.C[0], self.A[0]], [self.A[1], self.B[1], self.C[1], self.A[1]], 'b-', label='ABC')
+            if self.D is not None:
+                plt.plot([self.C[0], self.D[0], self.A[0], self.C[0]], [self.C[1], self.D[1], self.A[1], self.C[1]], 'g-', label='CDA')
 
-#         plt.xlabel('x1')
-#         plt.ylabel('x2')
-#         plt.title('Points X, y, and triangles ABC, CDA')
-#         plt.legend()
-#         plt.grid(True)
-#         plt.show()
+        plt.xlabel('x1')
+        plt.ylabel('x2')
+        plt.title('Points X, y, and triangles ABC, CDA')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
 
 
 # import numpy as np
