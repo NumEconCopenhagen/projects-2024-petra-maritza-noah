@@ -148,6 +148,8 @@ class MarketClearing:
         # Maximize SWF (minimize -SWF)
         return -SWF, equilibrium_values  # Return equilibrium values along with SWF
     
+
+
     def maximize_SWF(self):
         initial_guess = [0.0, 0.0]  # Initial guess for tau and T
         bounds = [(0.0, None), (0.0, None)]  # Non-negative bounds for tau and T
