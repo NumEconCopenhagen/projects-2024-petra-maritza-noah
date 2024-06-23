@@ -73,57 +73,57 @@ class ExchangeEconomyClass:
         return epss2
  
     def find_equilibrium(self, p1_guess, kappa, eps, maxiter):
-            import numpy as np
-            p1 = p1_guess
-            t = 0
-            self.p2_star = 1  # Set p2 as the numeraire with a fixed value of 1
-            iterations = []
+        import numpy as np
+        p1 = p1_guess
+        t = 0
+        self.p2_star = 1  # Set p2 as the numeraire with a fixed value of 1
+        iterations = []
 
         for t in range(maxiter):
-        # Calculate excess demands for goods 1 and 2
+            # Calculate excess demands for goods 1 and 2
             eps1 = self.check_market_clearing1(p1)
             eps2 = self.check_market_clearing2(p1)
 
-        # Print current status to monitor the iteration process
-        print(f'Iteration {t}: p1 = {p1:.8f}, excess demand eps1 = {eps1:.8f}, eps2 = {eps2:.8f}')
+            # Print current status to monitor the iteration process
+            print(f'Iteration {t}: p1 = {p1:.8f}, excess demand eps1 = {eps1:.8f}, eps2 = {eps2:.8f}')
 
-        # Store the current p1 value in iterations list
-        iterations.append(p1)
+            # Store the current p1 value in iterations list
+            iterations.append(p1)
 
-        # Check if market is cleared for both goods, taking the absolute values of excess demands
-        if np.abs(eps1) < eps and np.abs(eps2) < eps:
-            print(f'Equilibrium found at iteration {t}: p1 = {p1:.8f}')
-            self.p1_star = p1
-            self.Z1 = eps1  # Store the excess demand for good 1 at equilibrium
-            self.Z2 = eps2  # Store the excess demand for good 2 at equilibrium
-            return iterations  # Return list of iterations
+            # Check if market is cleared for both goods, taking the absolute values of excess demands
+            if np.abs(eps1) < eps and np.abs(eps2) < eps:
+                print(f'Equilibrium found at iteration {t}: p1 = {p1:.8f}')
+                self.p1_star = p1
+                self.Z1 = eps1  # Store the excess demand for good 1 at equilibrium
+                self.Z2 = eps2  # Store the excess demand for good 2 at equilibrium
+                return iterations  # Return immediately upon finding a solution
 
-        # Adjust p1 based on the excess demand for good 1
-        p1_update = p1 + kappa * eps1  # Notice the plus sign, not minus
-        # Ensure that p1 does not become negative or zero
-        if p1_update <= 0:
-            print("Adjustment made p1 non-positive, reducing kappa and trying again.")
-            kappa *= 0.5  # Reduce kappa if p1_update is non-positive
-            p1 = max(p1 * 0.5, 1e-4)  # Make sure p1 is positive and not too close to zero
-            continue  # Skip the rest of this iteration
+            # Adjust p1 based on the excess demand for good 1
+            p1_update = p1 + kappa * eps1  # Notice the plus sign, not minus
+            # Ensure that p1 does not become negative or zero
+            if p1_update <= 0:
+                print("Adjustment made p1 non-positive, reducing kappa and trying again.")
+                kappa *= 0.5  # Reduce kappa if p1_update is non-positive
+                p1 = max(p1 * 0.5, 1e-4)  # Make sure p1 is positive and not too close to zero
+                continue  # Skip the rest of this iteration
 
-        # If the change in p1 is very small, we might be close to convergence
-        if np.abs(p1_update - p1) < eps:
-            print(f'Convergence reached at iteration {t}: p1 = {p1_update:.8f}')
-            self.p1_star = p1_update
-            self.Z1 = eps1  # Store the excess demand for good 1 at convergence
-            self.Z2 = eps2  # Store the excess demand for good 2 at convergence
-            iterations.append(p1_update)  # Store the final p1 value
-            return iterations  # Return list of iterations
+            # If the change in p1 is very small, we might be close to convergence
+            if np.abs(p1_update - p1) < eps:
+                print(f'Convergence reached at iteration {t}: p1 = {p1_update:.8f}')
+                self.p1_star = p1_update
+                self.Z1 = eps1  # Store the excess demand for good 1 at convergence
+                self.Z2 = eps2  # Store the excess demand for good 2 at convergence
+                iterations.append(p1_update)  # Store the final p1 value
+                return iterations  # Return if we've nearly converged
 
-        p1 = p1_update  # Update p1 for the next iteration
-        # Store the excess demand values for the current iteration
-        self.Z1, self.Z2 = self.check_market_clearing(p1)
+            p1 = p1_update  # Update p1 for the next iteration
+            # Store the excess demand values for the current iteration
+            self.Z1, self.Z2 = self.check_market_clearing(p1)
 
         # If we exit the loop without returning, no equilibrium was found
         print('Max iterations reached without finding equilibrium. Consider adjusting your parameters or initial guess.')
         self.p1_star = None  # Indicate that we did not find a solution
-        return iterations  
+        return iterations  # Return list of iterations, even if no equilibrium found
 
     def print_solution(self):
         # Check if the market-clearing price for p1 was found
