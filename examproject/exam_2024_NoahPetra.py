@@ -129,3 +129,40 @@ class MarketClearing:
         }
 
 
+    def objective_SWF(self, params):
+        tau, T = params
+        
+        # Calculate equilibrium prices
+        prices = self.solve_equilibrium(par=(self.tau, self.T, self.w))
+        
+        # Calculate equilibrium values
+        equilibrium_values = self.calculate_equilibrium_values(prices, par=(self.tau, self.T, self.w))
+        
+        # Extract relevant values
+        U = self.utility(equilibrium_values['c1_star'], equilibrium_values['c2_star'], equilibrium_values['ell_star'])
+        y2_star = equilibrium_values['y2_star']
+        
+        # Calculate SWF
+        SWF = U - self.kappa * y2_star
+        
+        # Maximize SWF (minimize -SWF)
+        return -SWF, equilibrium_values  # Return equilibrium values along with SWF
+    
+    def maximize_SWF(self):
+        initial_guess = [0.0, 0.0]  # Initial guess for tau and T
+        bounds = [(0.0, None), (0.0, None)]  # Non-negative bounds for tau and T
+        
+        result = minimize(self.objective_SWF, initial_guess, bounds=bounds, method='L-BFGS-B')
+        
+        # Extract optimal tau and T
+        optimal_tau, optimal_T = result.x
+        
+        # Extract equilibrium values from result of objective function
+        optimal_SWF, equilibrium_values = self.objective_SWF(result.x)
+        
+        # Print or return results
+        print(f"Optimal tau: {optimal_tau}")
+        print(f"Implied T: {optimal_tau * equilibrium_values['c2_star']}")
+        print(f"Maximized SWF: {-optimal_SWF}")  # -optimal_SWF because we minimized -SWF
+        
+        return optimal_tau, optimal_T
