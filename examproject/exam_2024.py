@@ -1,6 +1,7 @@
 #Question 3:
 
 import numpy as np
+import matplotlib as plt
 
 class InterpolationSolver:
     def __init__(self, X, y):
@@ -196,38 +197,29 @@ class InterpolationSolver:
             print(f"Absolute error: {np.abs(interpolated_value - true_value)}")
 
 
-    # def solve_question4(self, Y):
-    #     """
-    #     Solve Question 4: Compute the approximation of f(y) for all points in Y and compare with the true values.
-    #     """
-    #     results = []
-    #     for y in Y:
-    #         self.y = y
-    #         self.solve_question2()  # Ensure A, B, C, D, and barycentric coordinates are computed
-            
-    #         if self.A is None or self.B is None or self.C is None or self.D is None:
-    #             results.append(f"Error finding nearest points A, B, C, D for y={y}.")
-    #             continue
-            
-    #         interpolated_value, triangle = self.interpolate_value()
-    #         true_value = self.f(self.y)
-    #         absolute_error = np.abs(interpolated_value - true_value)
-            
-    #         results.append(f"For y={y}: Interpolated value using triangle {triangle}: {interpolated_value}")
-    #         results.append(f"For y={y}: True value of f(y): {true_value}")
-    #         results.append(f"For y={y}: Absolute error: {absolute_error}\n")
-        
-    #     return results
-
     def solve_question4(self, Y):
         """
-        Solve Question 4: Compute the approximation of f(y) for all points in Y and compare with the true values.
+        Solve Question 4: Compute the approximation of f(y) and compare with the true value for all points in Y.
         """
-        results = []
         for y in Y:
             self.y = y
-            self.solve_question
-
-    def f(self, x):
-        return x[0] * x[1]
-   
+            
+            # Ensure A, B, C, D, and barycentric coordinates are computed
+            self.solve_question2()
+            
+            # Compute function values at A, B, C, D
+            self.compute_function_values()
+            
+            # Interpolate f(y)
+            interpolated_value, triangle = self.interpolate_f_y()
+            
+            if np.isnan(interpolated_value):
+                print(f"For y={self.y}: Point y is not inside triangles ABC or CDA.")
+                true_value = self.f(self.y)
+                print(f"For y={self.y}: True value of f(y): {true_value}")
+                print(f"For y={self.y}: Absolute error: {np.abs(interpolated_value - true_value)}")
+            else:
+                print(f"For y={self.y}: Interpolated value using triangle {triangle}: {interpolated_value}")
+                true_value = self.f(self.y)
+                print(f"For y={self.y}: True value of f(y): {true_value}")
+                print(f"For y={self.y}: Absolute error: {np.abs(interpolated_value - true_value)}")
