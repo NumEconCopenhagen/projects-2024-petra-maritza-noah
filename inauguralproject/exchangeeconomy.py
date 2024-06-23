@@ -77,6 +77,7 @@ class ExchangeEconomyClass:
         p1 = p1_guess
         t = 0
         self.p2_star = 1  # Set p2 as the numeraire with a fixed value of 1
+        iterations = []
 
         for t in range(maxiter):
             # Calculate excess demands for goods 1 and 2
@@ -86,13 +87,16 @@ class ExchangeEconomyClass:
             # Print current status to monitor the iteration process
             print(f'Iteration {t}: p1 = {p1:.8f}, excess demand eps1 = {eps1:.8f}, eps2 = {eps2:.8f}')
 
+            # Store the current p1 value in iterations list
+            iterations.append(p1)
+
             # Check if market is cleared for both goods, taking the absolute values of excess demands
             if np.abs(eps1) < eps and np.abs(eps2) < eps:
                 print(f'Equilibrium found at iteration {t}: p1 = {p1:.8f}')
                 self.p1_star = p1
                 self.Z1 = eps1  # Store the excess demand for good 1 at equilibrium
                 self.Z2 = eps2  # Store the excess demand for good 2 at equilibrium
-                return p1  # Return immediately upon finding a solution
+                return iterations  # Return immediately upon finding a solution
 
             # Adjust p1 based on the excess demand for good 1
             p1_update = p1 + kappa * eps1  # Notice the plus sign, not minus
@@ -109,7 +113,8 @@ class ExchangeEconomyClass:
                 self.p1_star = p1_update
                 self.Z1 = eps1  # Store the excess demand for good 1 at convergence
                 self.Z2 = eps2  # Store the excess demand for good 2 at convergence
-                return p1_update  # Return if we've nearly converged
+                iterations.append(p1_update)  # Store the final p1 value
+                return iterations  # Return if we've nearly converged
 
             p1 = p1_update  # Update p1 for the next iteration
             # Store the excess demand values for the current iteration
@@ -118,7 +123,8 @@ class ExchangeEconomyClass:
         # If we exit the loop without returning, no equilibrium was found
         print('Max iterations reached without finding equilibrium. Consider adjusting your parameters or initial guess.')
         self.p1_star = None  # Indicate that we did not find a solution
-    
+        return iterations  # Return list of iterations, even if no equilibrium found
+
     def print_solution(self):
         # Check if the market-clearing price for p1 was found
         if hasattr(self, 'p1_star') and hasattr(self, 'p2_star'):
