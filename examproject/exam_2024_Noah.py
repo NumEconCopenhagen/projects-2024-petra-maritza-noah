@@ -12,6 +12,7 @@ class MarketClearing:
         self.tau = tau
         self.T = T
         self.w = w
+        self.kappa = 0.1
         self.p1_values = np.linspace(0.1, 2.0, 10)
         self.p2_values = np.linspace(0.1, 2.0, 10)
     
@@ -126,25 +127,26 @@ class MarketClearing:
             'good1_clearing': good1_clearing,
             'good2_clearing': good2_clearing
         }
-    def firm_behavior(w, p, A, gamma):
-        l_star = (p * A * gamma / w) ** (1 / (1 - gamma))
-        y_star = A * l_star ** gamma
+    
+    def firm_behavior(self, w, p):
+        l_star = (p * self.A * self.gamma / w) ** (1 / (1 - self.gamma))
+        y_star = self.A * l_star ** self.gamma
         pi_star = p * y_star - w * l_star
         return l_star, y_star, pi_star
 
-    def consumer_behavior(w, p1, p2, tau, T, pi1, pi2, alpha, nu, epsilon):
+    def consumer_behavior(self, w, p1, p2, tau, T, pi1, pi2):
         wL = w + T + pi1 + pi2
-        c1 = alpha * wL / p1
-        c2 = (1 - alpha) * wL / (p2 + tau)
-        L = (wL / nu) ** (1 / (1 + epsilon))
+        c1 = self.alpha * wL / p1
+        c2 = (1 - self.alpha) * wL / (p2 + tau)
+        L = (wL / self.nu) ** (1 / (1 + self.epsilon))
         return c1, c2, L
 
-    def social_welfare(w, p1, p2, tau, T, par):
-        l1, y1, pi1 = firm_behavior(w, p1, par.A, par.gamma)
-        l2, y2, pi2 = firm_behavior(w, p2 + tau, par.A, par.gamma)
-        c1, c2, L = consumer_behavior(w, p1, p2, tau, T, pi1, pi2, par.alpha, par.nu, par.epsilon)
-        U = np.log(c1 ** par.alpha * c2 ** (1 - par.alpha)) - nu * L ** (1 + epsilon) / (1 + epsilon)
-        SWF = U - par.kappa * y2
+    def social_welfare(self, w, p1, p2, tau, T):
+        l1, y1, pi1 = self.firm_behavior(w, p1)
+        l2, y2, pi2 = self.firm_behavior(w, p2 + tau)
+        c1, c2, L = self.consumer_behavior(w, p1, p2, tau, T, pi1, pi2)
+        U = np.log(c1 ** self.alpha * c2 ** (1 - self.alpha)) - self.nu * L ** (1 + self.epsilon) / (1 + self.epsilon)
+        SWF = U - self.kappa * y2
         return SWF
 
     def optimize_swf(self, w, p1, p2):
