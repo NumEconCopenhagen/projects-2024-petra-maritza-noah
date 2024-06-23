@@ -325,11 +325,6 @@ class MarketClearing2:
         
         return optimal_tau, optimal_T
 
-
-#Question 2:
-
-
-
 #Question 3:
 
 class InterpolationSolver:
