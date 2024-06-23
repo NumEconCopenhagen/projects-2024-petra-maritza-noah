@@ -106,11 +106,6 @@ class InterpolationSolver:
             print("Cannot form the required quadrilateral. Return NaN.")
             return
         
-        # Print values of A, B, C, D
-        print(f"A = {self.A}")
-        print(f"B = {self.B}")
-        print(f"C = {self.C}")
-        print(f"D = {self.D}")
 
     def solve_question2(self):
         """
@@ -133,12 +128,13 @@ class InterpolationSolver:
             self.triangle_name = 'None'
         
         # Print barycentric coordinates and triangle location
-        print(f"Barycentric coordinates for y: ABC {self.r_ABC}, CDA {self.r_CDA}")
-        print(f"Point y is located inside triangle {self.triangle_name}.")
+        # print(f"Barycentric coordinates for y: ABC {self.r_ABC}, CDA {self.r_CDA}")
+        # print(f"Point y is located inside triangle {self.triangle_name}.")
         
         # Interpolate f(y)
         interpolated_value = self.interpolate_value()
-        print(f"The interpolated value of f(y) at y = {self.y} is: {interpolated_value}")
+        # print(f"The interpolated value of f(y) at y = {self.y} is: {interpolated_value}")
+
 
     def f(self, point):
         """
