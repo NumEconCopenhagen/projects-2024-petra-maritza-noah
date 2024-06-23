@@ -1,7 +1,14 @@
-#Question 3:
-
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
+
+#Question 1:
+
+
+#Question 2:
+
+
+
+#Question 3:
 
 class InterpolationSolver:
     def __init__(self, X, y):
@@ -94,7 +101,7 @@ class InterpolationSolver:
     
     def solve_question1(self):
         """
-        Solve Question 1: Find A, B, C, D and print values.
+        Solve Question 1: Find A, B, C, D.
         """
         # Find A, B, C, D
         self.A = self.find_nearest_point(1)
@@ -106,11 +113,6 @@ class InterpolationSolver:
             print("Cannot form the required quadrilateral. Return NaN.")
             return
         
-        # Print values of A, B, C, D
-        print(f"A = {self.A}")
-        print(f"B = {self.B}")
-        print(f"C = {self.C}")
-        print(f"D = {self.D}")
 
     def solve_question2(self):
         """
@@ -131,14 +133,6 @@ class InterpolationSolver:
             self.triangle_name = 'CDA'
         else:
             self.triangle_name = 'None'
-        
-        # Print barycentric coordinates and triangle location
-        print(f"Barycentric coordinates for y: ABC {self.r_ABC}, CDA {self.r_CDA}")
-        print(f"Point y is located inside triangle {self.triangle_name}.")
-        
-        # Interpolate f(y)
-        interpolated_value = self.interpolate_value()
-        print(f"The interpolated value of f(y) at y = {self.y} is: {interpolated_value}")
 
     def f(self, point):
         """
@@ -196,30 +190,76 @@ class InterpolationSolver:
             # Comparison
             print(f"Absolute error: {np.abs(interpolated_value - true_value)}")
 
+    def solve_question4(self):
+        """
+        Generates random points in a unit square and processes a list of fixed points y_points. For each point y in y_points,
+        finds points A, B, C, D that form two triangles around y, computes the barycentric coordinates of y with respect to the triangles,
+        checks if y is inside either triangle, interpolates the value of f(y) using the barycentric coordinates, and compares the interpolated
+        value with the true value of f(y). Plots the points and the triangles for the last point in y_points.
 
-    def solve_question4(self, Y):
+        Returns:
+            None
         """
-        Solve Question 4: Compute the approximation of f(y) and compare with the true value for all points in Y.
-        """
-        for y in Y:
-            self.y = y
-            
-            # Ensure A, B, C, D, and barycentric coordinates are computed
-            self.solve_question2()
-            
-            # Compute function values at A, B, C, D
-            self.compute_function_values()
-            
-            # Interpolate f(y)
-            interpolated_value, triangle = self.interpolate_f_y()
-            
-            if np.isnan(interpolated_value):
-                print(f"For y={self.y}: Point y is not inside triangles ABC or CDA.")
-                true_value = self.f(self.y)
-                print(f"For y={self.y}: True value of f(y): {true_value}")
-                print(f"For y={self.y}: Absolute error: {np.abs(interpolated_value - true_value)}")
+        # Random points in the unit square
+        rng = np.random.default_rng(2024)
+        self.X = rng.uniform(size=(100, 2))  # Increase the number of points
+        y_points = [(0.2, 0.2), (0.8, 0.2), (0.8, 0.8), (0.5, 0.5)]
+
+        # Process each point in y_points
+        results = []
+
+        for y in y_points:
+            self.y = np.array(y)
+            self.solve_question1()
+
+            if self.A is None or self.B is None or self.C is None or self.D is None:
+                print("Cannot form the required quadrilateral. Return NaN.")
+                f_y_approx = np.nan
+                f_y_true = np.nan
             else:
-                print(f"For y={self.y}: Interpolated value using triangle {triangle}: {interpolated_value}")
-                true_value = self.f(self.y)
-                print(f"For y={self.y}: True value of f(y): {true_value}")
-                print(f"For y={self.y}: Absolute error: {np.abs(interpolated_value - true_value)}")
+                self.solve_question2()
+
+                r_ABC = self.compute_barycentric_coordinates(self.A, self.B, self.C)
+                r_CDA = self.compute_barycentric_coordinates(self.C, self.D, self.A)
+
+                inside_ABC = all(0 <= r <= 1 for r in r_ABC)
+                inside_CDA = all(0 <= r <= 1 for r in r_CDA)
+
+                if inside_ABC:
+                    f_y_approx = r_ABC[0] * self.f(self.A) + r_ABC[1] * self.f(self.B) + r_ABC[2] * self.f(self.C)
+                elif inside_CDA:
+                    f_y_approx = r_CDA[0] * self.f(self.C) + r_CDA[1] * self.f(self.D) + r_CDA[2] * self.f(self.A)
+                else:
+                    f_y_approx = np.nan
+
+                f_y_true = self.f(self.y)
+            
+            results.append((y, f_y_approx, f_y_true))
+
+        # Plotting the points and triangles for the last y in y_points
+        plt.figure(figsize=(8, 8))
+        plt.scatter(self.X[:, 0], self.X[:, 1], label='Random Points')
+        for y in y_points:
+            plt.scatter([y[0]], [y[1]], color='red', label=f'y={y}')
+        A, B, C, D = self.A, self.B, self.C, self.D
+        if A is not None and B is not None and C is not None and D is not None:
+            plt.scatter([A[0], B[0], C[0], D[0]], [A[1], B[1], C[1], D[1]], color='green', label='A, B, C, D')
+            # Draw triangles
+            triangle_ABC = plt.Polygon([A, B, C], fill=None, edgecolor='blue', label='Triangle ABC')
+            triangle_CDA = plt.Polygon([C, D, A], fill=None, edgecolor='purple', label='Triangle CDA')
+            plt.gca().add_patch(triangle_ABC)
+            plt.gca().add_patch(triangle_CDA)
+
+        plt.xlabel('x1')
+        plt.ylabel('x2')
+        plt.legend()
+        plt.title('Points and Triangles')
+        plt.grid(True)
+        plt.show()
+
+        # Print results
+        for y, f_y_approx, f_y_true in results:
+            print(f"Point y: {y}")
+            print(f"Approximated value of f(y): {f_y_approx}")
+            print(f"True value of f(y): {f_y_true}")
+            print("---")
