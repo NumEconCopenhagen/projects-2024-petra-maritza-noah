@@ -18,15 +18,7 @@ class ExchangeEconomyClass:
     def utility_A(self,x1A,x2A):
         par = self.par
         return x1A**par.alpha * x2A**(1 - par.alpha)
-        try:
-        if x1 > 0 and x2 > 0:
-           utility = x1**self.par['alpha'] * x2**(1 - self.par['alpha'])
-        else:
-            utility = -np.inf
-        except ValueError:
-            utility = -np.inf
-        return utility
-
+        
     def utility_B(self,x1B,x2B):
         par = self.par
         return x1B**par.beta * x2B**(1 - par.beta)
@@ -41,10 +33,8 @@ class ExchangeEconomyClass:
     def demand_B(self,p1):
         w1B, w2B = (1 - self.par.w1A), (1 - self.par.w2A)
         beta = self.par.beta
-        x1B = beta * (w1B * p1 + w2B) / p1 if p1 != 0 else np.inf
-        x2B = (1 - beta) * (w1B * p1 + w2B) if p1 != 0 else np.inf
-        except ZeroDivisionError:
-            x1B, x2B = np.inf, np.inf
+        x1B = beta * (w1B * p1 + w2B) / p1
+        x2B = (1 - beta) * (w1B * p1 + w2B)
         return x1B, x2B
 
     def check_market_clearing(self,p1):
